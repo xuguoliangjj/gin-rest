@@ -1,26 +1,32 @@
 package main
 
 import (
+	"base"
 	"controllers"
-	"db"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
+	"log"
 	"os"
 )
 
 func main() {
-
-	//初始化数据库
-	if db.OBJ.InitDB() {
-		fmt.Println("数据库初始化成功")
-	}
 	// Disable Console Color, you don't need console color when writing the logs to file.
 	gin.DisableConsoleColor()
 
 	// Logging to a file.
 	f, _ := os.Create("server.log")
 	gin.DefaultWriter = io.MultiWriter(f)
+
+	//加载配置文件
+	if base.INIT_OBJ.Init() {
+		log.Println("====== 配置文件加载成功 ======")
+	}
+	//初始化数据库
+	if base.MODEL.InitDB() {
+		log.Println("====== 数据库初始化成功 ======")
+	}
+
 	router := gin.Default()
 	api := router.Group("/v1")
 
@@ -35,5 +41,8 @@ func main() {
 		about.GET("/", controllers.GetAboutController.Index)
 	}
 
-	router.Run("0.0.0.0:8081") // listen and serve on 0.0.0.0:8081
+	err := router.Run("0.0.0.0:8081")
+	if err != nil {
+		fmt.Println("启动错误")
+	}
 }

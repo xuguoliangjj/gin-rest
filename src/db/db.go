@@ -21,13 +21,3 @@ func (this *DBObj) OpenDB(svr string, usr string, pwd string, db string) *sql.DB
 	}
 	return hand
 }
-
-func (this *DBObj) InitDB() bool {
-	DB_Server := "127.0.0.1"
-	DB_UserId := "root"
-	DB_Password := "123456"
-	DB_Name := "admin"
-	this.DBHand = this.OpenDB(DB_Server, DB_UserId, DB_Password, DB_Name)
-	err := this.DBHand.Ping()
-	return err != nil
-}
