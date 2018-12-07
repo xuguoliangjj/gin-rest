@@ -2,12 +2,19 @@ package main
 
 import (
 	"controllers"
+	"db"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"io"
 	"os"
 )
 
 func main() {
+
+	//初始化数据库
+	if db.OBJ.InitDB() {
+		fmt.Println("数据库初始化成功")
+	}
 	// Disable Console Color, you don't need console color when writing the logs to file.
 	gin.DisableConsoleColor()
 
