@@ -13,7 +13,7 @@ import (
 func main() {
 	// Disable Console Color, you don't need console color when writing the logs to file.
 	gin.DisableConsoleColor()
-
+	gin.SetMode(gin.DebugMode)
 	// Logging to a file.
 	f, _ := os.Create("server.log")
 	gin.DefaultWriter = io.MultiWriter(f)
