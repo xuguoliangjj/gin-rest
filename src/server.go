@@ -23,9 +23,9 @@ func main() {
 		log.Println("====== 配置文件加载成功 ======")
 	}
 	//初始化数据库
-	if base.MODEL.InitDB() {
-		log.Println("====== 数据库初始化成功 ======")
-	}
+	//if base.MODEL.InitDB() {
+	//	log.Println("====== 数据库初始化成功 ======")
+	//}
 
 	router := gin.Default()
 	api := router.Group("/v1")

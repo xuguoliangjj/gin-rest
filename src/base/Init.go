@@ -7,7 +7,7 @@ import (
 )
 
 type InitSt struct {
-	cfg Config
+	Cfg Config
 }
 
 var INIT_OBJ InitSt
@@ -19,6 +19,6 @@ func (this *InitSt) Init() bool {
 		log.Fatal(e)
 	}
 	dir += "/bin/server.cfg"
-	this.cfg.Read(dir)
+	this.Cfg.Read(dir)
 	return true
 }

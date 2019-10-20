@@ -3,7 +3,6 @@ package controllers
 import (
 	"base"
 	"database/sql"
-	"db"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -25,7 +24,7 @@ var GetUserController UserController
 func (this *UserController) Index(ctx *gin.Context) {
 	user := new(User)
 	username := "许国梁"
-	row := db.OBJ.DBHand.QueryRow("SELECT id,username,email FROM user where username = ?", username)
+	row := base.OBJ.DBHand.QueryRow("SELECT id,username,email FROM user where username = ?", username)
 	err := row.Scan(&user.Id, &user.UserName, &user.Email)
 	if err == nil {
 		ctx.JSON(200, gin.H{
@@ -45,7 +44,9 @@ func (this *UserController) Index(ctx *gin.Context) {
 }
 
 func doInsert(ctx *gin.Context, username string) int64 {
-	row, err := db.OBJ.DBHand.Exec("insert into user (username,auth_key,password_hash,email) value (?,'1','1','1')", username)
+	dbx := base.OBJ.GetMySQL()
+	row, err := dbx.Exec("insert into user (username,auth_key,password_hash,email) value (?,'1','1','1')", username)
+	defer dbx.Close()
 	if row == nil {
 		log.Panicf("错误：%s\n", err.Error())
 		return 0
