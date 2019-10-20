@@ -18,7 +18,7 @@ func (this *InitSt) Init() bool {
 	if e != nil {
 		log.Fatal(e)
 	}
-	dir += "/server.cfg"
+	dir += "/bin/server.cfg"
 	this.cfg.Read(dir)
 	return true
 }

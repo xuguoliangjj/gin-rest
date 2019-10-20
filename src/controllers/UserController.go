@@ -4,7 +4,10 @@ import (
 	"base"
 	"database/sql"
 	"db"
+	"fmt"
 	"github.com/gin-gonic/gin"
+	"log"
+	"time"
 )
 
 type UserController struct {
@@ -21,7 +24,8 @@ var GetUserController UserController
 
 func (this *UserController) Index(ctx *gin.Context) {
 	user := new(User)
-	row := db.OBJ.DBHand.QueryRow("SELECT id,username,email FROM user where username = ?", "admin")
+	username := "许国梁"
+	row := db.OBJ.DBHand.QueryRow("SELECT id,username,email FROM user where username = ?", username)
 	err := row.Scan(&user.Id, &user.UserName, &user.Email)
 	if err == nil {
 		ctx.JSON(200, gin.H{
@@ -35,17 +39,28 @@ func (this *UserController) Index(ctx *gin.Context) {
 	} else {
 		ctx.JSON(200, gin.H{
 			"code":    -1,
-			"message": "fail",
+			"message": "not found: " + username,
 		})
 	}
 }
 
+func doInsert(ctx *gin.Context, username string) int64 {
+	row, err := db.OBJ.DBHand.Exec("insert into user (username,auth_key,password_hash,email) value (?,'1','1','1')", username)
+	if row == nil {
+		log.Panicf("错误：%s\n", err.Error())
+		return 0
+	}
+	num, _ := row.LastInsertId()
+	fmt.Println(time.Now(), num)
+	return num
+}
 func (this *UserController) Create(ctx *gin.Context) {
+	go doInsert(ctx, ctx.Param("username"))
 	ctx.JSON(200, gin.H{
 		"code":    1,
 		"message": "ok",
 		"data": gin.H{
-			"name": "Create me",
+			"name": "Create: " + ctx.Param("username"),
 			"age":  "99",
 		},
 	})

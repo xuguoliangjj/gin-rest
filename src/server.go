@@ -33,7 +33,7 @@ func main() {
 	user := api.Group("user")
 	{
 		user.GET("/", controllers.GetUserController.Index)
-		user.GET("/create", controllers.GetUserController.Create)
+		user.GET("/create/:username", controllers.GetUserController.Create)
 	}
 
 	about := api.Group("about")
