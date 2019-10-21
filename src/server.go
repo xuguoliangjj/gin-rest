@@ -10,7 +10,21 @@ import (
 	"os"
 )
 
+func mysqlDBPool() *base.SQLConnPool {
+	host := `127.0.0.1:3306`
+	database := `wsdk_admin`
+	user := `root`
+	password := ``
+	charset := `utf8`
+	// 用于设置最大打开的连接数
+	maxOpenConns := 100
+	// 用于设置闲置的连接数
+	maxIdleConns := 50
+	mysqlDB := base.InitMySQLPool(host, database, user, password, charset, maxOpenConns, maxIdleConns)
+	return mysqlDB
+}
 func main() {
+	mysqlDB := mysqlDBPool()
 	// Disable Console Color, you don't need console color when writing the logs to file.
 	gin.DisableConsoleColor()
 	gin.SetMode(gin.DebugMode)
@@ -22,18 +36,18 @@ func main() {
 	if base.INIT_OBJ.Init() {
 		log.Println("====== 配置文件加载成功 ======")
 	}
-	//初始化数据库
-	//if base.MODEL.InitDB() {
-	//	log.Println("====== 数据库初始化成功 ======")
-	//}
 
 	router := gin.Default()
 	api := router.Group("/v1")
 
 	user := api.Group("user")
 	{
-		user.GET("/", controllers.GetUserController.Index)
-		user.GET("/create/:username", controllers.GetUserController.Create)
+		user.GET("/", func(context *gin.Context) {
+			controllers.GetUserController.Index(context, mysqlDB)
+		})
+		user.GET("/create/:username", func(context *gin.Context) {
+			controllers.GetUserController.Create(context, mysqlDB)
+		})
 	}
 
 	about := api.Group("about")
